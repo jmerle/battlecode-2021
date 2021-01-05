@@ -1,8 +1,10 @@
 package camel_case.robot;
 
+import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
+import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
 import camel_case.util.Color;
@@ -15,6 +17,17 @@ public abstract class Robot {
   protected Team myTeam;
   protected Team enemyTeam;
 
+  protected Direction[] adjacentDirections = {
+    Direction.NORTH,
+    Direction.EAST,
+    Direction.SOUTH,
+    Direction.WEST,
+    Direction.NORTHEAST,
+    Direction.SOUTHEAST,
+    Direction.SOUTHWEST,
+    Direction.NORTHWEST
+  };
+
   public Robot(RobotController rc, RobotType type) {
     this.rc = rc;
 
@@ -25,6 +38,20 @@ public abstract class Robot {
   }
 
   public abstract void run() throws GameActionException;
+
+  protected MapLocation senseRobot(RobotType robotType, Team team, int radiusSquared) {
+    for (RobotInfo robot : rc.senseNearbyRobots(radiusSquared, team)) {
+      if (robot.getType() == robotType) {
+        return robot.getLocation();
+      }
+    }
+
+    return null;
+  }
+
+  protected MapLocation senseRobot(RobotType robotType, Team team) {
+    return senseRobot(robotType, team, -1);
+  }
 
   protected void drawLine(MapLocation from, MapLocation to, Color color) {
     rc.setIndicatorLine(from, to, color.getR(), color.getG(), color.getB());

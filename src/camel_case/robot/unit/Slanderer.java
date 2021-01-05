@@ -10,5 +10,7 @@ public class Slanderer extends Unit {
   }
 
   @Override
-  public void run() throws GameActionException {}
+  public void run() throws GameActionException {
+    tryMoveRandom();
+  }
 }
