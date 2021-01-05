@@ -26,15 +26,12 @@ public class EnlightenmentCenter extends Robot {
     int spawnInfluence = (int) (50 + Math.floor((double) rc.getRoundNum() / 60));
 
     RobotType spawnType = spawnOrder[nextSpawnIndex];
-    if (spawnType == RobotType.SLANDERER) {
-      if (senseRobot(RobotType.MUCKRAKER, enemyTeam) != null) {
-        spawnType = RobotType.POLITICIAN;
-      }
+    if (spawnType == RobotType.SLANDERER && senseRobot(RobotType.MUCKRAKER, enemyTeam) != null) {
+      spawnType = RobotType.POLITICIAN;
     }
 
     if (trySpawn(spawnType, spawnInfluence)) {
       nextSpawnIndex = (nextSpawnIndex + 1) % spawnOrder.length;
-      return;
     }
 
     double influence = rc.getInfluence();

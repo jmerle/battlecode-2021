@@ -32,7 +32,7 @@ public class Muckraker extends Unit {
       }
     }
 
-    tryMoveToEnemy();
+    tryWander();
   }
 
   private boolean tryExpose(MapLocation location) throws GameActionException {

@@ -35,7 +35,7 @@ public class Politician extends Unit {
       }
     }
 
-    tryMoveToEnemy();
+    tryWander();
   }
 
   private RobotInfo getClosestEmpowerTarget() {

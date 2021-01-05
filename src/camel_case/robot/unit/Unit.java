@@ -9,22 +9,10 @@ import camel_case.robot.Robot;
 import camel_case.util.BetterRandom;
 
 public abstract class Unit extends Robot {
-  protected MapLocation hq = null;
+  private MapLocation hq = null;
 
-  protected Direction[] enemyDirections = {
-    Direction.WEST,
-    Direction.SOUTH,
-    Direction.NORTH,
-    Direction.EAST,
-    Direction.SOUTH,
-    Direction.WEST,
-    Direction.NORTHEAST,
-    Direction.WEST,
-    Direction.SOUTHEAST,
-    Direction.WEST,
-  };
-
-  protected int currentEnemyDirection = 0;
+  private Direction[] wanderDirections = getShuffledAdjacentDirections();
+  private int currentWanderDirection = 0;
 
   public Unit(RobotController rc, RobotType type) {
     super(rc, type);
@@ -47,18 +35,7 @@ public abstract class Unit extends Robot {
   }
 
   protected boolean tryMoveRandom() throws GameActionException {
-    Direction[] directions = adjacentDirections.clone();
-
-    for (int i = directions.length; i > 1; i--) {
-      int a = i - 1;
-      int b = BetterRandom.nextInt(i);
-
-      Direction temp = directions[a];
-      directions[a] = directions[b];
-      directions[b] = temp;
-    }
-
-    for (Direction direction : directions) {
+    for (Direction direction : getShuffledAdjacentDirections()) {
       if (tryMove(direction)) {
         return true;
       }
@@ -109,25 +86,39 @@ public abstract class Unit extends Robot {
     return tryMoveTo(hq);
   }
 
-  protected boolean tryMoveToEnemy() throws GameActionException {
-    MapLocation currentLocation = rc.getLocation();
+  protected boolean tryWander() throws GameActionException {
+    MapLocation location = rc.getLocation();
     while (true) {
-      currentLocation = currentLocation.add(enemyDirections[currentEnemyDirection]);
+      location = location.add(wanderDirections[currentWanderDirection]);
 
-      if (getDistanceTo(currentLocation) > me.sensorRadiusSquared) {
+      if (getDistanceTo(location) > me.sensorRadiusSquared) {
         break;
       }
 
-      if (!rc.onTheMap(currentLocation)) {
-        currentEnemyDirection = (currentEnemyDirection + 1) % enemyDirections.length;
+      if (!rc.onTheMap(location)) {
+        currentWanderDirection = (currentWanderDirection + 1) % wanderDirections.length;
         break;
       }
     }
 
-    if (tryMove(enemyDirections[currentEnemyDirection])) {
+    if (tryMove(wanderDirections[currentWanderDirection])) {
       return true;
     }
 
     return tryMoveRandom();
+  }
+
+  private Direction[] getShuffledAdjacentDirections() {
+    Direction[] directions = adjacentDirections.clone();
+
+    for (int i = directions.length - 1; i > 0; i--) {
+      int index = BetterRandom.nextInt(i + 1);
+
+      Direction temp = directions[index];
+      directions[index] = directions[i];
+      directions[i] = temp;
+    }
+
+    return directions;
   }
 }
