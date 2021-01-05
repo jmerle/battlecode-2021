@@ -1,6 +1,7 @@
 package camel_case.robot.unit;
 
 import battlecode.common.GameActionException;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 
@@ -11,6 +12,19 @@ public class Slanderer extends Unit {
 
   @Override
   public void run() throws GameActionException {
-    tryMoveRandom();
+    super.run();
+
+    MapLocation enemyMuckraker = senseRobot(RobotType.MUCKRAKER, enemyTeam);
+    if (enemyMuckraker != null) {
+      if (tryMove(rc.getLocation().directionTo(enemyMuckraker).opposite())) {
+        return;
+      }
+    }
+
+    tryWanderSafe();
+  }
+
+  public Politician convertToPolitician() {
+    return new Politician(rc);
   }
 }

@@ -40,17 +40,28 @@ public abstract class Robot {
   public abstract void run() throws GameActionException;
 
   protected MapLocation senseRobot(RobotType robotType, Team team, int radiusSquared) {
+    MapLocation closestRobot = null;
+    int closestDistance = 0;
+
     for (RobotInfo robot : rc.senseNearbyRobots(radiusSquared, team)) {
       if (robot.getType() == robotType) {
-        return robot.getLocation();
+        int distance = getDistanceTo(robot.getLocation());
+        if (closestRobot == null || distance < closestDistance) {
+          closestRobot = robot.getLocation();
+          closestDistance = distance;
+        }
       }
     }
 
-    return null;
+    return closestRobot;
   }
 
   protected MapLocation senseRobot(RobotType robotType, Team team) {
     return senseRobot(robotType, team, -1);
+  }
+
+  protected int getDistanceTo(MapLocation location) {
+    return rc.getLocation().distanceSquaredTo(location);
   }
 
   protected void drawLine(MapLocation from, MapLocation to, Color color) {

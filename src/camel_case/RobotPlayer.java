@@ -2,6 +2,7 @@ package camel_case;
 
 import battlecode.common.Clock;
 import battlecode.common.RobotController;
+import battlecode.common.RobotType;
 import camel_case.robot.Robot;
 import camel_case.robot.building.EnlightenmentCenter;
 import camel_case.robot.unit.Muckraker;
@@ -19,12 +20,12 @@ public class RobotPlayer {
 
     //noinspection InfiniteLoopStatement
     while (true) {
-      performTurn(rc, robot);
+      robot = performTurn(rc, robot);
       Clock.yield();
     }
   }
 
-  private static void performTurn(RobotController rc, Robot robot) {
+  private static Robot performTurn(RobotController rc, Robot robot) {
     int startTurn = rc.getRoundNum();
 
     try {
@@ -34,12 +35,18 @@ public class RobotPlayer {
       e.printStackTrace();
     }
 
+    if (robot instanceof Slanderer && rc.getType() == RobotType.POLITICIAN) {
+      robot = ((Slanderer) robot).convertToPolitician();
+    }
+
     if (rc.getRoundNum() > startTurn) {
       int limit = rc.getType().bytecodeLimit;
       System.out.println("Used too much bytecode, the limit is " + limit + "!");
     } else {
       notifyHighBytecodeUsage(rc);
     }
+
+    return robot;
   }
 
   private static Robot createRobot(RobotController rc) {

@@ -12,14 +12,27 @@ public class Muckraker extends Unit {
 
   @Override
   public void run() throws GameActionException {
+    super.run();
+
     MapLocation enemySlanderer = senseRobot(RobotType.SLANDERER, enemyTeam);
     if (enemySlanderer != null) {
       if (tryExpose(enemySlanderer)) {
         return;
       }
+
+      if (tryMoveTo(enemySlanderer)) {
+        return;
+      }
     }
 
-    tryMoveRandom();
+    MapLocation enemyHq = senseRobot(RobotType.ENLIGHTENMENT_CENTER, enemyTeam);
+    if (enemyHq != null) {
+      if (tryMoveTo(enemyHq)) {
+        return;
+      }
+    }
+
+    tryMoveToEnemy();
   }
 
   private boolean tryExpose(MapLocation location) throws GameActionException {

@@ -12,10 +12,12 @@ public class Politician extends Unit {
 
   @Override
   public void run() throws GameActionException {
+    super.run();
+
     RobotInfo empowerTarget = getClosestEmpowerTarget();
 
     if (empowerTarget != null) {
-      int empowerTargetDistance = empowerTarget.getLocation().distanceSquaredTo(rc.getLocation());
+      int empowerTargetDistance = getDistanceTo(empowerTarget.getLocation());
       if (empowerTargetDistance <= me.actionRadiusSquared) {
         if (tryEmpower(me.actionRadiusSquared)) {
           return;
@@ -33,7 +35,7 @@ public class Politician extends Unit {
       }
     }
 
-    tryMoveRandom();
+    tryMoveToEnemy();
   }
 
   private RobotInfo getClosestEmpowerTarget() {
@@ -41,11 +43,11 @@ public class Politician extends Unit {
     int closestDistance = -1;
 
     for (RobotInfo robot : rc.senseNearbyRobots()) {
-      if (robot.getTeam() == myTeam) {
+      if (robot.getTeam() == myTeam || robot.getType() == RobotType.SLANDERER) {
         continue;
       }
 
-      int distance = robot.getLocation().distanceSquaredTo(rc.getLocation());
+      int distance = getDistanceTo(robot.getLocation());
       if (closestTarget == null || distance < closestDistance) {
         closestTarget = robot;
         closestDistance = distance;
