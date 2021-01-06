@@ -7,7 +7,7 @@ import battlecode.common.RobotType;
 
 public class Politician extends Unit {
   public Politician(RobotController rc) {
-    super(rc, RobotType.POLITICIAN);
+    super(rc, RobotType.POLITICIAN, true);
   }
 
   @Override

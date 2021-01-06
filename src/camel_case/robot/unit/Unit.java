@@ -6,20 +6,23 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotType;
 import camel_case.robot.Robot;
-import camel_case.util.BetterRandom;
+import camel_case.util.ArrayUtils;
 
 public abstract class Unit extends Robot {
-  private MapLocation hq = null;
+  protected MapLocation hq = null;
 
-  private Direction[] wanderDirections = getShuffledAdjacentDirections();
-  private int currentWanderDirection = 0;
+  private final Direction[] wanderDirections = ArrayUtils.shuffle(adjacentDirections.clone());
+  private MapLocation[] wanderTargets = null;
+  private int currentWanderIndex = 0;
 
-  public Unit(RobotController rc, RobotType type) {
-    super(rc, type);
+  public Unit(RobotController rc, RobotType type, boolean checkForMapBoundaries) {
+    super(rc, type, checkForMapBoundaries);
   }
 
   @Override
   public void run() throws GameActionException {
+    super.run();
+
     if (hq == null) {
       hq = senseRobot(RobotType.ENLIGHTENMENT_CENTER, myTeam);
     }
@@ -35,7 +38,7 @@ public abstract class Unit extends Robot {
   }
 
   protected boolean tryMoveRandom() throws GameActionException {
-    for (Direction direction : getShuffledAdjacentDirections()) {
+    for (Direction direction : ArrayUtils.shuffle(adjacentDirections.clone())) {
       if (tryMove(direction)) {
         return true;
       }
@@ -87,38 +90,65 @@ public abstract class Unit extends Robot {
   }
 
   protected boolean tryWander() throws GameActionException {
+    if (hq != null && mapInfo != null && wanderTargets == null) {
+      wanderTargets = getWanderTargets();
+      currentWanderIndex = 0;
+    }
+
+    if (wanderTargets == null) {
+      if (tryWanderDirections()) {
+        return true;
+      }
+    } else {
+      if (tryWanderTargets()) {
+        return true;
+      }
+    }
+
+    return tryMoveRandom();
+  }
+
+  private boolean tryWanderDirections() throws GameActionException {
     MapLocation location = rc.getLocation();
     while (true) {
-      location = location.add(wanderDirections[currentWanderDirection]);
+      location = location.add(wanderDirections[currentWanderIndex]);
 
       if (getDistanceTo(location) > me.sensorRadiusSquared) {
         break;
       }
 
       if (!rc.onTheMap(location)) {
-        currentWanderDirection = (currentWanderDirection + 1) % wanderDirections.length;
+        currentWanderIndex = (currentWanderIndex + 1) % wanderDirections.length;
         break;
       }
     }
 
-    if (tryMove(wanderDirections[currentWanderDirection])) {
-      return true;
-    }
-
-    return tryMoveRandom();
+    return tryMove(wanderDirections[currentWanderIndex]);
   }
 
-  private Direction[] getShuffledAdjacentDirections() {
-    Direction[] directions = adjacentDirections.clone();
+  private MapLocation[] getWanderTargets() {
+    int reflectedX = mapInfo.xOffset + (mapInfo.size - 1 - (hq.x - mapInfo.xOffset));
+    int reflectedY = mapInfo.yOffset + (mapInfo.size - 1 - (hq.y - mapInfo.yOffset));
 
-    for (int i = directions.length - 1; i > 0; i--) {
-      int index = BetterRandom.nextInt(i + 1);
+    MapLocation[] otherLocations =
+        new MapLocation[] {
+          new MapLocation(reflectedX, hq.y),
+          new MapLocation(hq.x, reflectedY),
+          new MapLocation(reflectedX, reflectedY)
+        };
 
-      Direction temp = directions[index];
-      directions[index] = directions[i];
-      directions[i] = temp;
+    ArrayUtils.shuffle(otherLocations);
+
+    return new MapLocation[] {
+      otherLocations[0], otherLocations[1], otherLocations[2], new MapLocation(hq.x, hq.y)
+    };
+  }
+
+  private boolean tryWanderTargets() throws GameActionException {
+    if (rc.canSenseLocation(wanderTargets[currentWanderIndex])) {
+      currentWanderIndex = (currentWanderIndex + 1) % wanderTargets.length;
     }
 
-    return directions;
+    return tryMoveTo(wanderTargets[currentWanderIndex]);
   }
 }

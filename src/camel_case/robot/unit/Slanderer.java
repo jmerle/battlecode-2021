@@ -7,7 +7,7 @@ import battlecode.common.RobotType;
 
 public class Slanderer extends Unit {
   public Slanderer(RobotController rc) {
-    super(rc, RobotType.SLANDERER);
+    super(rc, RobotType.SLANDERER, false);
   }
 
   @Override

@@ -7,7 +7,7 @@ import battlecode.common.RobotType;
 
 public class Muckraker extends Unit {
   public Muckraker(RobotController rc) {
-    super(rc, RobotType.MUCKRAKER);
+    super(rc, RobotType.MUCKRAKER, true);
   }
 
   @Override

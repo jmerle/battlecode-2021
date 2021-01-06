@@ -30,6 +30,7 @@ public class RobotPlayer {
 
     try {
       robot.run();
+      robot.updateFlag();
     } catch (Exception e) {
       System.out.println("Exception in robot #" + rc.getID() + " (" + rc.getType() + ")");
       e.printStackTrace();
