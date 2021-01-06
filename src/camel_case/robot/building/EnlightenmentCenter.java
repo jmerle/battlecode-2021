@@ -29,10 +29,6 @@ public class EnlightenmentCenter extends Robot {
   public void run() throws GameActionException {
     super.run();
 
-    for (int i = 0; i < 100; i++) {
-      StringBuilder sb = new StringBuilder((int) 1e9);
-    }
-
     if (mapInfo == null) {
       parseFlagsFromSpawnedRobots();
       updateMapInfo();
