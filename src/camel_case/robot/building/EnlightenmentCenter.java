@@ -6,6 +6,7 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import camel_case.robot.Robot;
+import camel_case.util.Painter;
 
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
@@ -21,6 +22,8 @@ public class EnlightenmentCenter extends Robot {
   private final int[] spawnedRobots = new int[10000];
   private int spawnedRobotsCount = 0;
 
+  private Painter painter = null;
+
   public EnlightenmentCenter(RobotController rc) {
     super(rc, RobotType.ENLIGHTENMENT_CENTER, true);
   }
@@ -32,6 +35,10 @@ public class EnlightenmentCenter extends Robot {
     if (mapInfo == null) {
       parseFlagsFromSpawnedRobots();
       updateMapInfo();
+    }
+
+    if (mapInfo != null) {
+      drawMessage();
     }
 
     int spawnInfluence = (int) (50 + Math.floor((double) rc.getRoundNum() / 60));
@@ -99,5 +106,13 @@ public class EnlightenmentCenter extends Robot {
     }
 
     return false;
+  }
+
+  private void drawMessage() {
+    if (painter == null) {
+      painter = new Painter(rc, mapInfo);
+    }
+
+    painter.paintText(new String[] {"Eindhoven", "de", "Gekste", "", "camel_case"});
   }
 }

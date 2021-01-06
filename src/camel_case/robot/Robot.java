@@ -167,7 +167,7 @@ public abstract class Robot {
   }
 
   protected void drawLine(MapLocation from, MapLocation to, Color color) {
-    rc.setIndicatorLine(from, to, color.getR(), color.getG(), color.getB());
+    rc.setIndicatorLine(from, to, color.r, color.g, color.b);
   }
 
   protected void drawLine(MapLocation to, Color color) {
@@ -175,6 +175,6 @@ public abstract class Robot {
   }
 
   protected void drawDot(MapLocation location, Color color) {
-    rc.setIndicatorDot(location, color.getR(), color.getG(), color.getB());
+    rc.setIndicatorDot(location, color.r, color.g, color.b);
   }
 }
