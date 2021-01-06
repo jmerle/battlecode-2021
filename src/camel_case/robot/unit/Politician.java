@@ -1,13 +1,23 @@
 package camel_case.robot.unit;
 
 import battlecode.common.GameActionException;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
+import camel_case.util.MapInfo;
 
 public class Politician extends Unit {
   public Politician(RobotController rc) {
     super(rc, RobotType.POLITICIAN, true);
+  }
+
+  public Politician(RobotController rc, MapLocation hq, MapInfo mapInfo, int[] boundaries) {
+    this(rc);
+
+    this.hq = hq;
+    this.mapInfo = mapInfo;
+    this.boundaries = boundaries;
   }
 
   @Override

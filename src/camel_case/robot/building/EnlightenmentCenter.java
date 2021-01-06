@@ -2,6 +2,7 @@ package camel_case.robot.building;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
+import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
@@ -11,7 +12,7 @@ import camel_case.util.Painter;
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
     RobotType.MUCKRAKER,
-    RobotType.SLANDERER,
+    RobotType.POLITICIAN,
     RobotType.SLANDERER,
     RobotType.POLITICIAN,
     RobotType.POLITICIAN
@@ -19,7 +20,7 @@ public class EnlightenmentCenter extends Robot {
 
   private int nextSpawnIndex = 0;
 
-  private final int[] spawnedRobots = new int[10000];
+  private final int[] spawnedRobots = new int[GameConstants.GAME_MAX_NUMBER_OF_ROUNDS];
   private int spawnedRobotsCount = 0;
 
   private Painter painter = null;

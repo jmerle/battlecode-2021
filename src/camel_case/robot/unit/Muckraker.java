@@ -32,7 +32,11 @@ public class Muckraker extends Unit {
       }
     }
 
-    tryWander();
+    if (rc.getID() % 2 == 0) {
+      tryWanderSafe();
+    } else {
+      tryWander();
+    }
   }
 
   private boolean tryExpose(MapLocation location) throws GameActionException {

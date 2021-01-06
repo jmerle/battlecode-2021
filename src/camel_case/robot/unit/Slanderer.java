@@ -25,6 +25,6 @@ public class Slanderer extends Unit {
   }
 
   public Politician convertToPolitician() {
-    return new Politician(rc);
+    return new Politician(rc, hq, mapInfo, boundaries);
   }
 }

@@ -21,7 +21,7 @@ public abstract class Robot {
 
   protected MapInfo mapInfo = null;
 
-  private final int[] boundaries = {-1, -1, -1, -1};
+  protected int[] boundaries = {-1, -1, -1, -1};
   private int currentFlagIndex = 0;
 
   protected Direction[] adjacentDirections = {
