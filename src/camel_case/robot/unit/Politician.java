@@ -45,7 +45,11 @@ public class Politician extends Unit {
       }
     }
 
-    tryWander();
+    if (rc.getID() % 6 == 0) {
+      tryWanderSafe();
+    } else {
+      tryWander();
+    }
   }
 
   private RobotInfo getClosestEmpowerTarget() {
