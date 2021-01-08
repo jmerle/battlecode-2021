@@ -96,8 +96,13 @@ public abstract class Unit extends Robot {
 
     int x = hq.x <= mapInfo.minX + mapInfo.size / 2 ? mapInfo.minX : mapInfo.maxX;
     int y = hq.y <= mapInfo.minY + mapInfo.size / 2 ? mapInfo.minY : mapInfo.maxY;
+    MapLocation target = new MapLocation(x, y);
 
-    return tryMoveTo(new MapLocation(x, y));
+    if (tryMoveTo(target)) {
+      return true;
+    }
+
+    return tryWanderSafe();
   }
 
   protected boolean tryWander() throws GameActionException {
@@ -129,7 +134,38 @@ public abstract class Unit extends Robot {
       }
 
       if (!rc.onTheMap(location)) {
-        currentWanderIndex = (currentWanderIndex + 1) % wanderDirections.length;
+        if (mapInfo == null) {
+          while (true) {
+            currentWanderIndex = (currentWanderIndex + 1) % wanderDirections.length;
+            Direction direction = wanderDirections[currentWanderIndex];
+
+            if ((boundaries[0] == -1 || boundaries[2] == -1)
+                && (direction == Direction.NORTHWEST
+                    || direction == Direction.WEST
+                    || direction == Direction.SOUTHWEST
+                    || direction == Direction.SOUTH
+                    || direction == Direction.SOUTHEAST)) {
+              break;
+            }
+
+            if (boundaries[1] == -1
+                && (direction == Direction.NORTHEAST
+                    || direction == Direction.EAST
+                    || direction == Direction.SOUTHEAST)) {
+              break;
+            }
+
+            if (boundaries[3] == -1
+                && (direction == Direction.SOUTHWEST
+                    || direction == Direction.SOUTH
+                    || direction == Direction.SOUTHEAST)) {
+              break;
+            }
+          }
+        } else {
+          currentWanderIndex = (currentWanderIndex + 1) % wanderDirections.length;
+        }
+
         break;
       }
     }

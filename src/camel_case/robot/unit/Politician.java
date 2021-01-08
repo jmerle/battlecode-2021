@@ -29,7 +29,7 @@ public class Politician extends Unit {
     if (empowerTarget != null) {
       int empowerTargetDistance = getDistanceTo(empowerTarget.getLocation());
       if (empowerTargetDistance <= me.actionRadiusSquared) {
-        if (tryEmpower(me.actionRadiusSquared)) {
+        if (tryEmpower(empowerTargetDistance)) {
           return;
         }
       }

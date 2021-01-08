@@ -14,6 +14,7 @@ public class EnlightenmentCenter extends Robot {
     RobotType.SLANDERER,
     RobotType.SLANDERER,
     RobotType.MUCKRAKER,
+    RobotType.SLANDERER,
     RobotType.POLITICIAN,
     RobotType.POLITICIAN
   };
@@ -42,7 +43,7 @@ public class EnlightenmentCenter extends Robot {
       drawMessage();
     }
 
-    int spawnInfluence = (int) (50 + Math.floor((double) rc.getRoundNum() / 60));
+    int spawnInfluence = (int) (100 + Math.floor((double) rc.getRoundNum() / 60));
 
     RobotType spawnType = spawnOrder[nextSpawnIndex];
     if (spawnType == RobotType.SLANDERER && senseRobot(RobotType.MUCKRAKER, enemyTeam) != null) {
