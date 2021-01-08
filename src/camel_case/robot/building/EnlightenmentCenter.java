@@ -12,15 +12,15 @@ import camel_case.util.Painter;
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
     RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
+    RobotType.SLANDERER,
     RobotType.MUCKRAKER,
     RobotType.SLANDERER,
+    RobotType.MUCKRAKER,
     RobotType.SLANDERER,
-    RobotType.SLANDERER,
+    RobotType.MUCKRAKER,
     RobotType.POLITICIAN,
-    RobotType.POLITICIAN
+    RobotType.MUCKRAKER,
+    RobotType.POLITICIAN,
   };
 
   private int nextSpawnIndex = 0;
@@ -59,7 +59,7 @@ public class EnlightenmentCenter extends Robot {
         spawnInfluence = 1;
         break;
       case POLITICIAN:
-        spawnInfluence = 50;
+        spawnInfluence = Math.max(10, rc.getInfluence() / 10);
         break;
       case SLANDERER:
         spawnInfluence = Math.max(Math.min(rc.getInfluence(), 1000), 100);
