@@ -41,7 +41,7 @@ def clientName = "battlecode21-client-${os.startsWith("windows") ? "win" : os.st
 def battlecodeVersion = file("version.txt").text.trim()
 def battlecodeVersionUrl = "https://2021.battlecode.org/version.txt"
 
-def examplefuncsplayerUrl = "https://raw.githubusercontent.com/battlecode/battlecode21-scaffold/master/src/examplefuncsplayer/RobotPlayer.java"
+def examplefuncsplayerUrl = "https://raw.githubusercontent.com/battlecode/battlecode21/master/example-bots/src/main/examplefuncsplayer/RobotPlayer.java"
 def examplefuncsplayerPath = "src/examplefuncsplayer/RobotPlayer.java"
 
 repositories {
@@ -249,8 +249,8 @@ task createSubmission(type: Zip) {
 
     dependsOn "build"
 
-    from file("src/camel_case").getAbsolutePath()
-    include "**/*"
+    from file("src").getAbsolutePath()
+    include "camel_case/**/*"
     archiveName "${new Date().format("yyyy-MM-dd_kk-mm-ss")}.zip"
     destinationDir file("${project.buildDir}/submissions")
 }
