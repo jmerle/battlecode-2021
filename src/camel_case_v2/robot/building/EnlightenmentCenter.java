@@ -1,4 +1,4 @@
-package camel_case.robot.building;
+package camel_case_v2.robot.building;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -6,18 +6,14 @@ import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.robot.Robot;
-import camel_case.util.Painter;
+import camel_case_v2.robot.Robot;
+import camel_case_v2.util.Painter;
 
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
     RobotType.SLANDERER,
     RobotType.SLANDERER,
+    RobotType.MUCKRAKER,
     RobotType.SLANDERER,
     RobotType.POLITICIAN,
     RobotType.POLITICIAN
@@ -47,23 +43,11 @@ public class EnlightenmentCenter extends Robot {
       drawMessage();
     }
 
-    RobotType spawnType = spawnOrder[nextSpawnIndex];
-    if (senseRobot(RobotType.MUCKRAKER, enemyTeam) != null
-        || senseRobot(RobotType.POLITICIAN, enemyTeam) != null) {
-      spawnType = RobotType.POLITICIAN;
-    }
+    int spawnInfluence = (int) (100 + Math.floor((double) rc.getRoundNum() / 60));
 
-    int spawnInfluence = 0;
-    switch (spawnType) {
-      case MUCKRAKER:
-        spawnInfluence = 1;
-        break;
-      case POLITICIAN:
-        spawnInfluence = 50;
-        break;
-      case SLANDERER:
-        spawnInfluence = Math.max(Math.min(rc.getInfluence(), 1000), 100);
-        break;
+    RobotType spawnType = spawnOrder[nextSpawnIndex];
+    if (spawnType == RobotType.SLANDERER && senseRobot(RobotType.MUCKRAKER, enemyTeam) != null) {
+      spawnType = RobotType.POLITICIAN;
     }
 
     if (trySpawn(spawnType, spawnInfluence)) {

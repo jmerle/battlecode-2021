@@ -1,11 +1,11 @@
-package camel_case.robot.unit;
+package camel_case_v2.robot.unit;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.util.MapInfo;
+import camel_case_v2.util.MapInfo;
 
 public class Politician extends Unit {
   public Politician(RobotController rc) {
@@ -28,10 +28,7 @@ public class Politician extends Unit {
 
     if (empowerTarget != null) {
       int empowerTargetDistance = getDistanceTo(empowerTarget.getLocation());
-      int maxTargetDistance =
-          empowerTarget.getType() == RobotType.ENLIGHTENMENT_CENTER ? 2 : me.actionRadiusSquared;
-
-      if (empowerTargetDistance <= maxTargetDistance) {
+      if (empowerTargetDistance <= me.actionRadiusSquared) {
         if (tryEmpower(empowerTargetDistance)) {
           return;
         }
@@ -48,11 +45,7 @@ public class Politician extends Unit {
       }
     }
 
-    if (rc.getID() % 6 == 0) {
-      tryHide();
-    } else {
-      tryWander();
-    }
+    tryWander();
   }
 
   private RobotInfo getClosestEmpowerTarget() {
@@ -60,7 +53,7 @@ public class Politician extends Unit {
     int closestDistance = -1;
 
     for (RobotInfo robot : rc.senseNearbyRobots()) {
-      if (robot.getTeam() == myTeam) {
+      if (robot.getTeam() == myTeam || robot.getType() == RobotType.SLANDERER) {
         continue;
       }
 

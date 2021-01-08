@@ -1,4 +1,4 @@
-package camel_case.util;
+package camel_case_v2.util;
 
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
@@ -55,10 +55,15 @@ public class Painter {
   }
 
   private void paintLine(String line, int baseY) {
-    int width = line.length() * 3;
-    int baseX = mapInfo.minX + (mapInfo.size - width) / 2;
+    int width = 0;
 
     char[] chars = line.toLowerCase().toCharArray();
+    for (char ch : chars) {
+      width += 3;
+    }
+
+    int baseX = mapInfo.minX + (mapInfo.size - width) / 2;
+
     for (char ch : chars) {
       paintCharacter(ch, baseX, baseY);
       baseX += 3;

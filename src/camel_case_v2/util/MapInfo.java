@@ -1,4 +1,4 @@
-package camel_case.util;
+package camel_case_v2.util;
 
 public class MapInfo {
   public final int size;
@@ -10,15 +10,15 @@ public class MapInfo {
   public final int minY;
   public final int maxY;
 
-  public MapInfo(int size, int xOffset, int yOffset) {
+  public MapInfo(int size, int xOffset, int yOffset, int minX, int maxX, int minY, int maxY) {
     this.size = size;
     this.xOffset = xOffset;
     this.yOffset = yOffset;
 
-    minX = xOffset;
-    maxX = xOffset + size;
-    minY = yOffset;
-    maxY = yOffset + size;
+    this.minX = minX;
+    this.maxX = maxX;
+    this.minY = minY;
+    this.maxY = maxY;
   }
 
   public static MapInfo parseBoundaries(int minX, int maxX, int minY, int maxY) {
@@ -48,6 +48,6 @@ public class MapInfo {
       return null;
     }
 
-    return new MapInfo(size, xOffset, yOffset);
+    return new MapInfo(size, xOffset, yOffset, minX, maxX, minY, maxY);
   }
 }
