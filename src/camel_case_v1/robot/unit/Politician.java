@@ -1,11 +1,11 @@
-package camel_case.robot.unit;
+package camel_case_v1.robot.unit;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.util.MapInfo;
+import camel_case_v1.util.MapInfo;
 
 public class Politician extends Unit {
   public Politician(RobotController rc) {
@@ -45,7 +45,11 @@ public class Politician extends Unit {
       }
     }
 
-    tryWander();
+    if (rc.getID() % 6 == 0) {
+      tryWanderSafe();
+    } else {
+      tryWander();
+    }
   }
 
   private RobotInfo getClosestEmpowerTarget() {

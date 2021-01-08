@@ -1,4 +1,4 @@
-package camel_case.robot.building;
+package camel_case_v1.robot.building;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -6,14 +6,14 @@ import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.robot.Robot;
-import camel_case.util.Painter;
+import camel_case_v1.robot.Robot;
+import camel_case_v1.util.Painter;
 
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
-    RobotType.SLANDERER,
-    RobotType.SLANDERER,
     RobotType.MUCKRAKER,
+    RobotType.POLITICIAN,
+    RobotType.SLANDERER,
     RobotType.POLITICIAN,
     RobotType.POLITICIAN
   };
