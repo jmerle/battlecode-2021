@@ -21,7 +21,7 @@ public class Slanderer extends Unit {
       }
     }
 
-    tryWanderSafe();
+    tryHide();
   }
 
   public Politician convertToPolitician() {

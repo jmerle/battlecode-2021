@@ -89,6 +89,17 @@ public abstract class Unit extends Robot {
     return tryMoveTo(hq);
   }
 
+  protected boolean tryHide() throws GameActionException {
+    if (hq == null || mapInfo == null) {
+      return tryWanderSafe();
+    }
+
+    int x = hq.x <= mapInfo.minX + mapInfo.size / 2 ? mapInfo.minX : mapInfo.maxX;
+    int y = hq.y <= mapInfo.minY + mapInfo.size / 2 ? mapInfo.minY : mapInfo.maxY;
+
+    return tryMoveTo(new MapLocation(x, y));
+  }
+
   protected boolean tryWander() throws GameActionException {
     if (hq != null && mapInfo != null && wanderTargets == null) {
       wanderTargets = getWanderTargets();
