@@ -16,9 +16,9 @@ public class MapInfo {
     this.yOffset = yOffset;
 
     minX = xOffset;
-    maxX = xOffset + size;
+    maxX = xOffset + size - 1;
     minY = yOffset;
-    maxY = yOffset + size;
+    maxY = yOffset + size - 1;
   }
 
   public static MapInfo parseBoundaries(int minX, int maxX, int minY, int maxY) {

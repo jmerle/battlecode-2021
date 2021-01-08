@@ -139,12 +139,10 @@ public abstract class Unit extends Robot {
             currentWanderIndex = (currentWanderIndex + 1) % wanderDirections.length;
             Direction direction = wanderDirections[currentWanderIndex];
 
-            if ((boundaries[0] == -1 || boundaries[2] == -1)
+            if (boundaries[0] == -1
                 && (direction == Direction.NORTHWEST
                     || direction == Direction.WEST
-                    || direction == Direction.SOUTHWEST
-                    || direction == Direction.SOUTH
-                    || direction == Direction.SOUTHEAST)) {
+                    || direction == Direction.SOUTHWEST)) {
               break;
             }
 
@@ -155,10 +153,17 @@ public abstract class Unit extends Robot {
               break;
             }
 
-            if (boundaries[3] == -1
-                && (direction == Direction.SOUTHWEST
+            if (boundaries[2] == -1
+                && (direction == Direction.SOUTHEAST
                     || direction == Direction.SOUTH
-                    || direction == Direction.SOUTHEAST)) {
+                    || direction == Direction.SOUTHWEST)) {
+              break;
+            }
+
+            if (boundaries[3] == -1
+                && (direction == Direction.NORTHWEST
+                    || direction == Direction.NORTH
+                    || direction == Direction.NORTHEAST)) {
               break;
             }
           }
