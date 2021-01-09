@@ -133,7 +133,7 @@ public abstract class Unit extends Robot {
     for (Direction possibleDirection : possibleDirections) {
       MapLocation newLocation = myLocation.add(possibleDirection);
 
-      if (!rc.canMove(direction)) {
+      if (!rc.canMove(possibleDirection)) {
         continue;
       }
 
