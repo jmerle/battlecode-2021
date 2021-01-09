@@ -122,33 +122,34 @@ public abstract class Unit extends Robot {
   }
 
   protected boolean tryMoveTo(MapLocation location) throws GameActionException {
-    Direction direction = rc.getLocation().directionTo(location);
+    MapLocation myLocation = rc.getLocation();
 
-    if (tryMove(direction)) {
-      return true;
-    }
+    Direction direction = myLocation.directionTo(location);
+    Direction[] possibleDirections = {direction, direction.rotateLeft(), direction.rotateRight()};
 
-    for (int i = 1; i < 2; i++) {
-      Direction rotatedLeft = direction;
-      for (int j = 0; j < i; j++) {
-        rotatedLeft = rotatedLeft.rotateLeft();
+    Direction bestDirection = null;
+    double bestPassability = 0.0;
+
+    for (Direction possibleDirection : possibleDirections) {
+      MapLocation newLocation = myLocation.add(possibleDirection);
+
+      if (!rc.canMove(direction)) {
+        continue;
       }
 
-      if (tryMove(rotatedLeft)) {
-        return true;
-      }
+      double passability = rc.sensePassability(newLocation);
 
-      Direction rotatedRight = direction;
-      for (int j = 0; j < i; j++) {
-        rotatedRight = rotatedRight.rotateRight();
-      }
-
-      if (tryMove(rotatedRight)) {
-        return true;
+      if (bestDirection == null || passability > bestPassability) {
+        bestDirection = possibleDirection;
+        bestPassability = passability;
       }
     }
 
-    return false;
+    if (bestDirection == null) {
+      return false;
+    }
+
+    return tryMove(bestDirection);
   }
 
   protected boolean tryWanderSafe() throws GameActionException {
