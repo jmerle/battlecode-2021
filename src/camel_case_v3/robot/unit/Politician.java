@@ -1,11 +1,11 @@
-package camel_case.robot.unit;
+package camel_case_v3.robot.unit;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.util.MapInfo;
+import camel_case_v3.util.MapInfo;
 
 public class Politician extends Unit {
   public Politician(RobotController rc) {
@@ -60,11 +60,11 @@ public class Politician extends Unit {
     int closestDistance = -1;
 
     for (RobotInfo robot : rc.senseNearbyRobots()) {
-      if (robot.team == myTeam) {
+      if (robot.getTeam() == myTeam) {
         continue;
       }
 
-      int distance = getDistanceTo(robot.location);
+      int distance = getDistanceTo(robot.getLocation());
       if (closestTarget == null || distance < closestDistance) {
         closestTarget = robot;
         closestDistance = distance;

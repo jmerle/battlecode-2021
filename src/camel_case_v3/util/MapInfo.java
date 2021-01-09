@@ -1,6 +1,4 @@
-package camel_case.util;
-
-import battlecode.common.MapLocation;
+package camel_case_v3.util;
 
 public class MapInfo {
   public final int size;
@@ -21,17 +19,6 @@ public class MapInfo {
     maxX = xOffset + size - 1;
     minY = yOffset;
     maxY = yOffset + size - 1;
-  }
-
-  public int encodeLocation(MapLocation location) {
-    return (location.y - yOffset) * size + (location.x - xOffset);
-  }
-
-  public MapLocation decodeLocation(int value) {
-    int x = value % size;
-    int y = value / size;
-
-    return new MapLocation(x + xOffset, y + yOffset);
   }
 
   public static MapInfo parseBoundaries(int minX, int maxX, int minY, int maxY) {

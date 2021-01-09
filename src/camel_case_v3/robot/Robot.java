@@ -1,4 +1,4 @@
-package camel_case.robot;
+package camel_case_v3.robot;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -7,14 +7,10 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import camel_case.util.Color;
-import camel_case.util.FlagType;
-import camel_case.util.MapInfo;
-import java.util.Arrays;
+import camel_case_v3.util.Color;
+import camel_case_v3.util.MapInfo;
 
 public abstract class Robot {
-  private static final FlagType[] FLAG_TYPES = FlagType.values();
-
   protected final RobotController rc;
 
   protected final RobotType me;
@@ -26,8 +22,6 @@ public abstract class Robot {
   protected MapInfo mapInfo = null;
 
   protected int[] boundaries = {-1, -1, -1, -1};
-
-  protected int[] flags = new int[FlagType.values().length];
   private int currentFlagIndex = 0;
 
   protected Direction[] adjacentDirections = {
@@ -49,36 +43,33 @@ public abstract class Robot {
 
     myTeam = rc.getTeam();
     enemyTeam = myTeam.opponent();
-
-    Arrays.fill(flags, -1);
   }
 
   public void run() throws GameActionException {
-    for (RobotInfo robot : rc.senseNearbyRobots(me.detectionRadiusSquared, myTeam)) {
-      parseFlag(rc.getFlag(robot.getID()));
-    }
-
     if (mapInfo == null) {
+      for (RobotInfo robot : rc.senseNearbyRobots(me.detectionRadiusSquared, myTeam)) {
+        parseFlag(rc.getFlag(robot.getID()));
+      }
+
       updateMapInfo();
     }
 
     if (mapInfo == null && checkForMapBoundaries) {
       detectMapBoundaries();
-      updateMapInfo();
     }
   }
 
   public void updateFlag() throws GameActionException {
     int currentFlag = rc.getFlag(rc.getID());
 
-    for (int i = 0; i < flags.length; i++) {
-      int index = (currentFlagIndex + i) % flags.length;
+    for (int i = 0; i < 4; i++) {
+      int index = (currentFlagIndex + i) % 4;
 
-      if (flags[index] == -1) {
+      if (boundaries[index] == -1) {
         continue;
       }
 
-      int newFlag = Integer.parseInt("" + (index + 10) + flags[index]);
+      int newFlag = Integer.parseInt("1" + index + boundaries[index]);
 
       if (currentFlag == 0 || newFlag != currentFlag) {
         rc.setFlag(newFlag);
@@ -95,39 +86,14 @@ public abstract class Robot {
 
     String flagStr = Integer.toString(flag);
 
-    int typeIndex = Integer.parseInt(flagStr.substring(0, 2)) - 10;
-    int value = Integer.parseInt(flagStr.substring(2));
-
-    if (typeIndex >= FLAG_TYPES.length) {
+    if (flagStr.length() != 7) {
       return;
     }
 
-    onFlag(FLAG_TYPES[typeIndex], value);
-  }
+    int index = Integer.parseInt(flagStr.substring(1, 2));
+    int coordinate = Integer.parseInt(flagStr.substring(2));
 
-  protected void onFlag(FlagType type, int value) {
-    switch (type) {
-      case MIN_X:
-        boundaries[0] = value;
-        setFlag(type, value);
-        break;
-      case MAX_X:
-        boundaries[1] = value;
-        setFlag(type, value);
-        break;
-      case MIN_Y:
-        boundaries[2] = value;
-        setFlag(type, value);
-        break;
-      case MAX_Y:
-        boundaries[3] = value;
-        setFlag(type, value);
-        break;
-    }
-  }
-
-  protected void setFlag(FlagType type, int value) {
-    flags[type.ordinal()] = value;
+    boundaries[index] = coordinate;
   }
 
   protected void updateMapInfo() {
@@ -136,34 +102,23 @@ public abstract class Robot {
     }
 
     mapInfo = MapInfo.parseBoundaries(boundaries[0], boundaries[1], boundaries[2], boundaries[3]);
-
-    if (mapInfo != null) {
-      setFlag(FlagType.MIN_X, mapInfo.minX);
-      setFlag(FlagType.MAX_X, mapInfo.maxX);
-      setFlag(FlagType.MIN_Y, mapInfo.minY);
-      setFlag(FlagType.MAX_Y, -1);
-    }
   }
 
   private void detectMapBoundaries() throws GameActionException {
     if (boundaries[0] == -1) {
       boundaries[0] = getMapBoundary(-1, 0);
-      setFlag(FlagType.MIN_X, boundaries[0]);
     }
 
     if (boundaries[1] == -1) {
       boundaries[1] = getMapBoundary(1, 0);
-      setFlag(FlagType.MAX_X, boundaries[1]);
     }
 
     if (boundaries[2] == -1) {
       boundaries[2] = getMapBoundary(0, -1);
-      setFlag(FlagType.MIN_Y, boundaries[2]);
     }
 
     if (boundaries[3] == -1) {
       boundaries[3] = getMapBoundary(0, 1);
-      setFlag(FlagType.MAX_Y, boundaries[3]);
     }
   }
 
