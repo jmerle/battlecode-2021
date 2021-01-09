@@ -59,8 +59,20 @@ public class Politician extends Unit {
     RobotInfo closestTarget = null;
     int closestDistance = -1;
 
+    MapLocation closestHq = senseRobot(RobotType.ENLIGHTENMENT_CENTER, myTeam);
+    if (closestHq == null) {
+      closestHq = hq;
+    }
+
     for (RobotInfo robot : rc.senseNearbyRobots()) {
       if (robot.team == myTeam) {
+        continue;
+      }
+
+      if (robot.type == RobotType.POLITICIAN
+          && robot.influence * 5 < rc.getInfluence()
+          && closestHq != null
+          && closestHq.distanceSquaredTo(robot.location) > 100) {
         continue;
       }
 

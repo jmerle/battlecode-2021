@@ -38,13 +38,10 @@ public abstract class Unit extends Robot {
     }
 
     for (RobotInfo robot : rc.senseNearbyRobots()) {
-      if (robot.type == RobotType.ENLIGHTENMENT_CENTER && robot.team != myTeam) {
+      if (robot.type == RobotType.ENLIGHTENMENT_CENTER && robot.team == enemyTeam) {
         MapLocation location = robot.location;
 
-        if (ignoredTargets.contains(location)) {
-          continue;
-        }
-
+        ignoredTargets.remove(location);
         possibleTargets.remove(location);
         knownTargets.add(location);
       }
@@ -83,7 +80,7 @@ public abstract class Unit extends Robot {
 
       RobotInfo robot = rc.senseRobotAtLocation(target);
 
-      if (robot == null || robot.team == myTeam) {
+      if (robot == null || robot.team != enemyTeam) {
         it.remove();
         otherTargets.remove(target);
         ignoredTargets.add(target);
