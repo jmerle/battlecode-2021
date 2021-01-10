@@ -15,6 +15,7 @@ import java.util.Set;
 
 public abstract class Unit extends Robot {
   protected MapLocation hq = null;
+  private int hqId = -1;
 
   private final Direction[] wanderDirections =
       ArrayUtils.shuffle(
@@ -37,6 +38,14 @@ public abstract class Unit extends Robot {
 
     if (hq == null) {
       hq = senseRobot(RobotType.ENLIGHTENMENT_CENTER, myTeam);
+
+      if (hq != null) {
+        hqId = rc.senseRobotAtLocation(hq).ID;
+      }
+    }
+
+    if (hq != null && rc.canGetFlag(hqId)) {
+      parseFlag(rc.getFlag(hqId));
     }
 
     for (RobotInfo robot : rc.senseNearbyRobots()) {
