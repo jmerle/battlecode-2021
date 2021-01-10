@@ -1,4 +1,4 @@
-package camel_case.robot.building;
+package camel_case_v4.robot.building;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -6,25 +6,20 @@ import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.robot.Robot;
-import camel_case.util.FlagType;
-import camel_case.util.Painter;
+import camel_case_v4.robot.Robot;
+import camel_case_v4.util.FlagType;
+import camel_case_v4.util.Painter;
 
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
     RobotType.MUCKRAKER,
+    RobotType.SLANDERER,
     RobotType.MUCKRAKER,
     RobotType.SLANDERER,
     RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
     RobotType.SLANDERER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.SLANDERER,
-    RobotType.MUCKRAKER,
     RobotType.MUCKRAKER,
     RobotType.POLITICIAN,
-    RobotType.MUCKRAKER,
     RobotType.MUCKRAKER,
     RobotType.POLITICIAN,
   };
@@ -65,7 +60,7 @@ public class EnlightenmentCenter extends Robot {
         spawnInfluence = 1;
         break;
       case POLITICIAN:
-        spawnInfluence = Math.max(20, rc.getInfluence() / 10);
+        spawnInfluence = Math.max(11, rc.getInfluence() / 10);
         break;
       case SLANDERER:
         spawnInfluence = Math.max(Math.min(rc.getInfluence(), 1000), 100);
@@ -76,11 +71,9 @@ public class EnlightenmentCenter extends Robot {
       nextSpawnIndex = (nextSpawnIndex + 1) % spawnOrder.length;
     }
 
-    if (rc.getRoundNum() > 500) {
-      double influence = rc.getInfluence();
-      double bidPercentage = (double) rc.getRoundNum() / 300.0;
-      tryBid((int) Math.round(influence / 100.0 * bidPercentage));
-    }
+    double influence = rc.getInfluence();
+    double bidPercentage = (double) rc.getRoundNum() / 150.0;
+    tryBid((int) Math.round(influence / 100.0 * bidPercentage));
   }
 
   @Override

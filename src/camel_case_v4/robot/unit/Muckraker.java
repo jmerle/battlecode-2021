@@ -1,4 +1,4 @@
-package camel_case.robot.unit;
+package camel_case_v4.robot.unit;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
@@ -32,17 +32,7 @@ public class Muckraker extends Unit {
       }
     }
 
-    if (rc.getID() % 2 == 0) {
-      if (tryWander()) {
-        return;
-      }
-    } else {
-      if (tryWanderDirections()) {
-        return;
-      }
-    }
-
-    tryMoveRandom();
+    tryWander();
   }
 
   private boolean tryExpose(MapLocation location) throws GameActionException {

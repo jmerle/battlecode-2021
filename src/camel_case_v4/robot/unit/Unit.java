@@ -1,4 +1,4 @@
-package camel_case.robot.unit;
+package camel_case_v4.robot.unit;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -6,9 +6,9 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.robot.Robot;
-import camel_case.util.ArrayUtils;
-import camel_case.util.FlagType;
+import camel_case_v4.robot.Robot;
+import camel_case_v4.util.ArrayUtils;
+import camel_case_v4.util.FlagType;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -16,9 +16,7 @@ import java.util.Set;
 public abstract class Unit extends Robot {
   protected MapLocation hq = null;
 
-  private final Direction[] wanderDirections =
-      ArrayUtils.shuffle(
-          new Direction[] {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST});
+  private final Direction[] wanderDirections = ArrayUtils.shuffle(adjacentDirections.clone());
   private int currentDirectionsIndex = 0;
 
   private final Set<MapLocation> knownTargets = new HashSet<>();
@@ -62,13 +60,9 @@ public abstract class Unit extends Robot {
       int reflectedX = mapInfo.xOffset + (mapInfo.size - 1 - (hq.x - mapInfo.xOffset));
       int reflectedY = mapInfo.yOffset + (mapInfo.size - 1 - (hq.y - mapInfo.yOffset));
 
-      int middleX = mapInfo.minX + mapInfo.size / 2;
-      int middleY = mapInfo.minY + mapInfo.size / 2;
-
       possibleTargets.add(new MapLocation(reflectedX, hq.y));
       possibleTargets.add(new MapLocation(hq.x, reflectedY));
       possibleTargets.add(new MapLocation(reflectedX, reflectedY));
-      possibleTargets.add(new MapLocation(middleX, middleY));
 
       addedReflectedTargets = true;
     }
@@ -204,7 +198,7 @@ public abstract class Unit extends Robot {
     return tryMoveRandom();
   }
 
-  protected boolean tryWanderDirections() throws GameActionException {
+  private boolean tryWanderDirections() throws GameActionException {
     MapLocation location = rc.getLocation();
     while (true) {
       location = location.add(wanderDirections[currentDirectionsIndex]);
@@ -219,19 +213,31 @@ public abstract class Unit extends Robot {
             currentDirectionsIndex = (currentDirectionsIndex + 1) % wanderDirections.length;
             Direction direction = wanderDirections[currentDirectionsIndex];
 
-            if (boundaries[0] == -1 && direction == Direction.WEST) {
+            if (boundaries[0] == -1
+                && (direction == Direction.NORTHWEST
+                    || direction == Direction.WEST
+                    || direction == Direction.SOUTHWEST)) {
               break;
             }
 
-            if (boundaries[1] == -1 && direction == Direction.EAST) {
+            if (boundaries[1] == -1
+                && (direction == Direction.NORTHEAST
+                    || direction == Direction.EAST
+                    || direction == Direction.SOUTHEAST)) {
               break;
             }
 
-            if (boundaries[2] == -1 && direction == Direction.SOUTH) {
+            if (boundaries[2] == -1
+                && (direction == Direction.SOUTHEAST
+                    || direction == Direction.SOUTH
+                    || direction == Direction.SOUTHWEST)) {
               break;
             }
 
-            if (boundaries[3] == -1 && direction == Direction.NORTH) {
+            if (boundaries[3] == -1
+                && (direction == Direction.NORTHWEST
+                    || direction == Direction.NORTH
+                    || direction == Direction.NORTHEAST)) {
               break;
             }
           }

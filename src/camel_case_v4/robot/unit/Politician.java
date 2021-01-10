@@ -1,15 +1,13 @@
-package camel_case.robot.unit;
+package camel_case_v4.robot.unit;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.util.MapInfo;
+import camel_case_v4.util.MapInfo;
 
 public class Politician extends Unit {
-  private boolean canDefend = true;
-
   public Politician(RobotController rc) {
     super(rc, RobotType.POLITICIAN, true);
   }
@@ -20,8 +18,6 @@ public class Politician extends Unit {
     this.hq = hq;
     this.mapInfo = mapInfo;
     this.boundaries = boundaries;
-
-    canDefend = false;
   }
 
   @Override
@@ -52,7 +48,7 @@ public class Politician extends Unit {
       }
     }
 
-    if (canDefend && rc.getID() % 4 == 0) {
+    if (rc.getID() % 6 == 0) {
       tryHide();
     } else {
       tryWander();
