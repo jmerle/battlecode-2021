@@ -15,7 +15,8 @@ import java.util.Set;
 
 public abstract class Unit extends Robot {
   protected MapLocation hq = null;
-  private int hqId = -1;
+
+  private Set<Integer> hqIds = new HashSet<>();
 
   private final Direction[] wanderDirections =
       ArrayUtils.shuffle(
@@ -38,23 +39,25 @@ public abstract class Unit extends Robot {
 
     if (hq == null) {
       hq = senseRobot(RobotType.ENLIGHTENMENT_CENTER, myTeam);
-
-      if (hq != null) {
-        hqId = rc.senseRobotAtLocation(hq).ID;
-      }
-    }
-
-    if (hq != null && rc.canGetFlag(hqId)) {
-      parseFlag(rc.getFlag(hqId));
     }
 
     for (RobotInfo robot : rc.senseNearbyRobots()) {
+      if (robot.type == RobotType.ENLIGHTENMENT_CENTER && robot.team == myTeam) {
+        hqIds.add(robot.ID);
+      }
+
       if (robot.type == RobotType.ENLIGHTENMENT_CENTER && robot.team == enemyTeam) {
         MapLocation location = robot.location;
 
         ignoredTargets.remove(location);
         possibleTargets.remove(location);
         knownTargets.add(location);
+      }
+    }
+
+    for (int id : hqIds) {
+      if (rc.canGetFlag(id)) {
+        parseFlag(rc.getFlag(id));
       }
     }
 
