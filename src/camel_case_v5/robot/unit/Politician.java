@@ -1,11 +1,11 @@
-package camel_case.robot.unit;
+package camel_case_v5.robot.unit;
 
 import battlecode.common.GameActionException;
 import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.util.MapInfo;
+import camel_case_v5.util.MapInfo;
 
 public class Politician extends Unit {
   private boolean canDefend = true;
@@ -52,7 +52,7 @@ public class Politician extends Unit {
       }
     }
 
-    if (isDefending()) {
+    if (canDefend && rc.getID() % 4 == 0) {
       tryHide();
     } else {
       tryWander();
@@ -68,36 +68,15 @@ public class Politician extends Unit {
       closestHq = hq;
     }
 
-    RobotInfo[] nearbyRobots = rc.senseNearbyRobots();
-
-    boolean slandererNearby = false;
-    for (RobotInfo robot : nearbyRobots) {
-      if (robot.team == myTeam
-          && robot.type == RobotType.POLITICIAN
-          && knownSlanderers.contains(robot.ID)) {
-        slandererNearby = true;
-        break;
-      }
-    }
-
-    for (RobotInfo robot : nearbyRobots) {
+    for (RobotInfo robot : rc.senseNearbyRobots()) {
       if (robot.team == myTeam) {
         continue;
       }
 
-      if (robot.type == RobotType.MUCKRAKER
-          && !isDefending()
-          && !slandererNearby
-          && closestHq != null
-          && closestHq.distanceSquaredTo(robot.location) > 8) {
-        continue;
-      }
-
       if (robot.type == RobotType.POLITICIAN
-          && !isDefending()
-          && robot.conviction * 5 < rc.getConviction()
+          && robot.influence * 5 < rc.getInfluence()
           && closestHq != null
-          && closestHq.distanceSquaredTo(robot.location) > 40) {
+          && closestHq.distanceSquaredTo(robot.location) > 100) {
         continue;
       }
 
@@ -118,9 +97,5 @@ public class Politician extends Unit {
     }
 
     return false;
-  }
-
-  private boolean isDefending() {
-    return canDefend && rc.getID() % 4 == 0;
   }
 }

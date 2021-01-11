@@ -1,4 +1,4 @@
-package camel_case.robot;
+package camel_case_v5.robot;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -7,12 +7,10 @@ import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import battlecode.common.Team;
-import camel_case.util.Color;
-import camel_case.util.FlagType;
-import camel_case.util.MapInfo;
+import camel_case_v5.util.Color;
+import camel_case_v5.util.FlagType;
+import camel_case_v5.util.MapInfo;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
 
 public abstract class Robot {
   private static final FlagType[] FLAG_TYPES = FlagType.values();
@@ -43,8 +41,6 @@ public abstract class Robot {
     Direction.NORTHWEST
   };
 
-  protected Set<Integer> knownSlanderers = new HashSet<>();
-
   public Robot(RobotController rc, RobotType type, boolean checkForMapBoundaries) {
     this.rc = rc;
     this.checkForMapBoundaries = checkForMapBoundaries;
@@ -59,7 +55,7 @@ public abstract class Robot {
 
   public void run() throws GameActionException {
     for (RobotInfo robot : rc.senseNearbyRobots(me.detectionRadiusSquared, myTeam)) {
-      parseFlag(robot.getID());
+      parseFlag(rc.getFlag(robot.getID()));
     }
 
     if (mapInfo == null) {
@@ -82,8 +78,7 @@ public abstract class Robot {
         continue;
       }
 
-      int type = me == RobotType.SLANDERER ? 2 : 1;
-      int newFlag = Integer.parseInt("" + type + index + flags[index]);
+      int newFlag = Integer.parseInt("" + (index + 10) + flags[index]);
 
       if (currentFlag == 0 || newFlag != currentFlag) {
         rc.setFlag(newFlag);
@@ -93,27 +88,18 @@ public abstract class Robot {
     }
   }
 
-  protected void parseFlag(int robotId) throws GameActionException {
-    int flag = rc.getFlag(robotId);
-
+  protected void parseFlag(int flag) {
     if (flag == 0) {
       return;
     }
 
     String flagStr = Integer.toString(flag);
 
-    boolean isSlanderer = flagStr.charAt(0) == '2';
-    int typeIndex = Integer.parseInt(flagStr.substring(1, 2));
+    int typeIndex = Integer.parseInt(flagStr.substring(0, 2)) - 10;
     int value = Integer.parseInt(flagStr.substring(2));
 
     if (typeIndex >= FLAG_TYPES.length) {
       return;
-    }
-
-    if (isSlanderer) {
-      knownSlanderers.add(robotId);
-    } else {
-      knownSlanderers.remove(robotId);
     }
 
     onFlag(FLAG_TYPES[typeIndex], value);

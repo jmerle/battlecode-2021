@@ -1,4 +1,4 @@
-package camel_case.robot.unit;
+package camel_case_v5.robot.unit;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -6,9 +6,9 @@ import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.robot.Robot;
-import camel_case.util.ArrayUtils;
-import camel_case.util.FlagType;
+import camel_case_v5.robot.Robot;
+import camel_case_v5.util.ArrayUtils;
+import camel_case_v5.util.FlagType;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -57,7 +57,7 @@ public abstract class Unit extends Robot {
 
     for (int id : hqIds) {
       if (rc.canGetFlag(id)) {
-        parseFlag(id);
+        parseFlag(rc.getFlag(id));
       }
     }
 

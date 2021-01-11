@@ -1,4 +1,4 @@
-package camel_case.robot.building;
+package camel_case_v5.robot.building;
 
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
@@ -6,9 +6,9 @@ import battlecode.common.GameConstants;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
-import camel_case.robot.Robot;
-import camel_case.util.FlagType;
-import camel_case.util.Painter;
+import camel_case_v5.robot.Robot;
+import camel_case_v5.util.FlagType;
+import camel_case_v5.util.Painter;
 
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
@@ -65,7 +65,7 @@ public class EnlightenmentCenter extends Robot {
         spawnInfluence = 1;
         break;
       case POLITICIAN:
-        spawnInfluence = Math.max(Math.min(rc.getInfluence() / 10, 10000), 20);
+        spawnInfluence = Math.max(20, rc.getInfluence() / 10);
         break;
       case SLANDERER:
         spawnInfluence = Math.max(Math.min(rc.getInfluence(), 1000), 100);
@@ -105,7 +105,7 @@ public class EnlightenmentCenter extends Robot {
         continue;
       }
 
-      parseFlag(id);
+      parseFlag(rc.getFlag(id));
     }
   }
 
