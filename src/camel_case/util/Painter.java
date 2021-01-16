@@ -46,7 +46,7 @@ public class Painter {
     b = (int) Math.round((1 - ratio) * current[2] + ratio * next[2]);
 
     int height = lines.length * 5;
-    int baseY = mapInfo.maxY - (mapInfo.size - height) / 2 - 4;
+    int baseY = mapInfo.maxY - (mapInfo.height - height) / 2 - 4;
 
     for (String line : lines) {
       paintLine(line, baseY);
@@ -56,7 +56,7 @@ public class Painter {
 
   private void paintLine(String line, int baseY) {
     int width = line.length() * 3;
-    int baseX = mapInfo.minX + (mapInfo.size - width) / 2;
+    int baseX = mapInfo.minX + (mapInfo.width - width) / 2;
 
     char[] chars = line.toLowerCase().toCharArray();
     for (char ch : chars) {

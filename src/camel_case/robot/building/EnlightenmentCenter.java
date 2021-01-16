@@ -3,28 +3,28 @@ package camel_case.robot.building;
 import battlecode.common.Direction;
 import battlecode.common.GameActionException;
 import battlecode.common.GameConstants;
+import battlecode.common.MapLocation;
 import battlecode.common.RobotController;
 import battlecode.common.RobotInfo;
 import battlecode.common.RobotType;
 import camel_case.robot.Robot;
+import camel_case.util.ArrayUtils;
 import camel_case.util.FlagType;
 import camel_case.util.Painter;
 
 public class EnlightenmentCenter extends Robot {
   private final RobotType[] spawnOrder = {
     RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
     RobotType.SLANDERER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.SLANDERER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
-    RobotType.SLANDERER,
-    RobotType.MUCKRAKER,
-    RobotType.MUCKRAKER,
     RobotType.POLITICIAN,
     RobotType.MUCKRAKER,
+    RobotType.SLANDERER,
+    RobotType.POLITICIAN,
+    RobotType.MUCKRAKER,
+    RobotType.SLANDERER,
+    RobotType.POLITICIAN,
+    RobotType.MUCKRAKER,
+    RobotType.POLITICIAN,
     RobotType.MUCKRAKER,
     RobotType.POLITICIAN,
   };
@@ -33,6 +33,10 @@ public class EnlightenmentCenter extends Robot {
 
   private final int[] spawnedRobots = new int[GameConstants.GAME_MAX_NUMBER_OF_ROUNDS];
   private int spawnedRobotsCount = 0;
+
+  private Direction[] offensiveSpawnDirections = ArrayUtils.shuffle(adjacentDirections.clone());
+  private Direction[] defensiveSpawnDirections = offensiveSpawnDirections;
+  private boolean spawnDirectionsRandom = true;
 
   private Painter painter = null;
 
@@ -51,11 +55,18 @@ public class EnlightenmentCenter extends Robot {
 
     if (mapInfo != null) {
       drawMessage();
+
+      if (spawnDirectionsRandom) {
+        optimizeSpawnDirections();
+        spawnDirectionsRandom = false;
+      }
     }
 
     RobotType spawnType = spawnOrder[nextSpawnIndex];
-    if (senseRobot(RobotType.MUCKRAKER, enemyTeam) != null
-        || senseRobot(RobotType.POLITICIAN, enemyTeam) != null) {
+    if (senseRobot(RobotType.POLITICIAN, enemyTeam) != null
+        || senseRobot(RobotType.ENLIGHTENMENT_CENTER, enemyTeam) != null
+        || (spawnType == RobotType.SLANDERER
+            && senseRobot(RobotType.MUCKRAKER, enemyTeam) != null)) {
       spawnType = RobotType.POLITICIAN;
     }
 
@@ -76,10 +87,14 @@ public class EnlightenmentCenter extends Robot {
       nextSpawnIndex = (nextSpawnIndex + 1) % spawnOrder.length;
     }
 
-    if (rc.getRoundNum() > 500) {
+    if (rc.getRoundNum() > 250
+        && rc.getTeamVotes() < GameConstants.GAME_MAX_NUMBER_OF_ROUNDS / 2 + 1) {
       double influence = rc.getInfluence();
-      double bidPercentage = (double) rc.getRoundNum() / 300.0;
-      tryBid((int) Math.round(influence / 100.0 * bidPercentage));
+      double bidPercentage =
+          (double) rc.getRoundNum() / ((double) GameConstants.GAME_MAX_NUMBER_OF_ROUNDS / 10.0);
+      int maxBidAmount = (int) Math.round(influence / 100.0 * bidPercentage);
+
+      tryBid(Math.min(50000, maxBidAmount));
     }
   }
 
@@ -109,6 +124,36 @@ public class EnlightenmentCenter extends Robot {
     }
   }
 
+  private void drawMessage() {
+    if (painter == null) {
+      painter = new Painter(rc, mapInfo);
+    }
+
+    painter.paintText(new String[] {"Eindhoven", "de", "Gekste", "", "camel_case"});
+  }
+
+  private void optimizeSpawnDirections() {
+    offensiveSpawnDirections = new Direction[8];
+
+    MapLocation location = rc.getLocation();
+    String dx = location.x <= mapInfo.minX + mapInfo.width / 2 ? "EAST" : "WEST";
+    String dy = location.y <= mapInfo.minY + mapInfo.height / 2 ? "NORTH" : "SOUTH";
+    offensiveSpawnDirections[0] = Direction.valueOf(dy + dx);
+
+    offensiveSpawnDirections[1] = offensiveSpawnDirections[0].rotateLeft();
+    offensiveSpawnDirections[2] = offensiveSpawnDirections[0].rotateRight();
+
+    offensiveSpawnDirections[3] = offensiveSpawnDirections[1].rotateLeft();
+    offensiveSpawnDirections[4] = offensiveSpawnDirections[2].rotateRight();
+
+    offensiveSpawnDirections[5] = offensiveSpawnDirections[3].rotateLeft();
+    offensiveSpawnDirections[6] = offensiveSpawnDirections[4].rotateRight();
+
+    offensiveSpawnDirections[7] = offensiveSpawnDirections[0].opposite();
+
+    defensiveSpawnDirections = ArrayUtils.reverse(offensiveSpawnDirections.clone());
+  }
+
   private boolean tryBid(int influence) throws GameActionException {
     if (rc.canBid(influence)) {
       rc.bid(influence);
@@ -119,7 +164,10 @@ public class EnlightenmentCenter extends Robot {
   }
 
   private boolean trySpawn(RobotType type, int influence) throws GameActionException {
-    for (Direction direction : adjacentDirections) {
+    Direction[] spawnDirections =
+        type == RobotType.SLANDERER ? defensiveSpawnDirections : offensiveSpawnDirections;
+
+    for (Direction direction : spawnDirections) {
       if (tryBuildRobot(type, direction, influence)) {
         return true;
       }
@@ -141,13 +189,5 @@ public class EnlightenmentCenter extends Robot {
     }
 
     return false;
-  }
-
-  private void drawMessage() {
-    if (painter == null) {
-      painter = new Painter(rc, mapInfo);
-    }
-
-    painter.paintText(new String[] {"Eindhoven", "de", "Gekste", "", "camel_case"});
   }
 }

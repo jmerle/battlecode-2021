@@ -150,13 +150,6 @@ public abstract class Robot {
     }
 
     mapInfo = MapInfo.parseBoundaries(boundaries[0], boundaries[1], boundaries[2], boundaries[3]);
-
-    if (mapInfo != null) {
-      setFlag(FlagType.MIN_X, mapInfo.minX);
-      setFlag(FlagType.MAX_X, mapInfo.maxX);
-      setFlag(FlagType.MIN_Y, mapInfo.minY);
-      setFlag(FlagType.MAX_Y, -1);
-    }
   }
 
   private void detectMapBoundaries() throws GameActionException {

@@ -80,22 +80,21 @@ public class Politician extends Unit {
       }
     }
 
+    int empowerFactor = (int) Math.floor(rc.getEmpowerFactor(myTeam, 0));
+
     for (RobotInfo robot : nearbyRobots) {
-      if (robot.team == myTeam) {
+      if (robot.team == myTeam
+          && !(robot.type == RobotType.ENLIGHTENMENT_CENTER && empowerFactor > 1000)) {
         continue;
       }
 
-      if (robot.type == RobotType.MUCKRAKER
-          && !isDefending()
-          && !slandererNearby
-          && closestHq != null
-          && closestHq.distanceSquaredTo(robot.location) > 8) {
+      if (robot.type == RobotType.MUCKRAKER && !isDefending() && !slandererNearby) {
         continue;
       }
 
       if (robot.type == RobotType.POLITICIAN
           && !isDefending()
-          && robot.conviction * 5 < rc.getConviction()
+          && robot.conviction * 5 < rc.getConviction() * empowerFactor
           && closestHq != null
           && closestHq.distanceSquaredTo(robot.location) > 40) {
         continue;

@@ -16,11 +16,9 @@ import java.util.Set;
 public abstract class Unit extends Robot {
   protected MapLocation hq = null;
 
-  private Set<Integer> hqIds = new HashSet<>();
+  private final Set<Integer> hqIds = new HashSet<>();
 
-  private final Direction[] wanderDirections =
-      ArrayUtils.shuffle(
-          new Direction[] {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST});
+  private final Direction[] wanderDirections = ArrayUtils.shuffle(adjacentDirections.clone());
   private int currentDirectionsIndex = 0;
 
   private final Set<MapLocation> knownTargets = new HashSet<>();
@@ -71,11 +69,11 @@ public abstract class Unit extends Robot {
     }
 
     if (hq != null && mapInfo != null && !addedReflectedTargets) {
-      int reflectedX = mapInfo.xOffset + (mapInfo.size - 1 - (hq.x - mapInfo.xOffset));
-      int reflectedY = mapInfo.yOffset + (mapInfo.size - 1 - (hq.y - mapInfo.yOffset));
+      int reflectedX = mapInfo.xOffset + (mapInfo.width - 1 - (hq.x - mapInfo.xOffset));
+      int reflectedY = mapInfo.yOffset + (mapInfo.height - 1 - (hq.y - mapInfo.yOffset));
 
-      int middleX = mapInfo.minX + mapInfo.size / 2;
-      int middleY = mapInfo.minY + mapInfo.size / 2;
+      int middleX = mapInfo.minX + mapInfo.width / 2;
+      int middleY = mapInfo.minY + mapInfo.height / 2;
 
       possibleTargets.add(new MapLocation(reflectedX, hq.y));
       possibleTargets.add(new MapLocation(hq.x, reflectedY));
@@ -187,8 +185,8 @@ public abstract class Unit extends Robot {
       return tryWanderSafe();
     }
 
-    int x = hq.x <= mapInfo.minX + mapInfo.size / 2 ? mapInfo.minX : mapInfo.maxX;
-    int y = hq.y <= mapInfo.minY + mapInfo.size / 2 ? mapInfo.minY : mapInfo.maxY;
+    int x = hq.x <= mapInfo.minX + mapInfo.width / 2 ? mapInfo.minX : mapInfo.maxX;
+    int y = hq.y <= mapInfo.minY + mapInfo.height / 2 ? mapInfo.minY : mapInfo.maxY;
     MapLocation target = new MapLocation(x, y);
 
     if (tryMoveTo(target)) {

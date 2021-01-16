@@ -12,4 +12,20 @@ public class ArrayUtils {
 
     return array;
   }
+
+  public static <T> T[] reverse(T[] array) {
+    int left = 0;
+    int right = array.length - 1;
+
+    while (left < right) {
+      T temp = array[left];
+      array[left] = array[right];
+      array[right] = temp;
+
+      left++;
+      right--;
+    }
+
+    return array;
+  }
 }
